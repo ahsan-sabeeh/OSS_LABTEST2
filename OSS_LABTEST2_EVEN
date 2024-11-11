@@ -1,0 +1,50 @@
+import pandas as pd
+import numpy as np
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer
+from sklearn.svm import SVC
+import matplotlib.pyplot as plt
+import pymongo
+
+df=pd.read_csv("New Institutes.csv")
+connection=pymongo.client('localhost',27018)
+db=connection['neww']
+
+features=df.features_name
+data=df.data
+target=df.target
+
+
+imputer=SimpleImputer()
+data=imputer.fit_transform(data)
+
+x_train,x_test,y_train,y_test=train_test_split(data,target,test_size=0.2,random_state=42)
+nb=MultinomialNB()
+nb.fit(x_train,y_train)
+print(nb.predict(x_test))
+print(nb.score(x_test,y_test))
+
+plt.bar(nb.predict(x_test),y_test,marker='o')
+plt.title("NB PREDICTION")
+plt.show()
+
+model=SVC()
+model.fit(x_train,y_train)
+print(model.predict(x_test))
+print(model.score(x_test,y_test))
+plt.bar(model.predict(x_test),y_test,marker='x')
+plt.title("SVC PREDICTION")
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
